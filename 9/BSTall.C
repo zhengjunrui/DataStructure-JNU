@@ -1,0 +1,135 @@
+/************************************************************************/
+/*   The code search a Binary sort tree.                                */
+/*   Author: John Lee                                                   */
+/*   E-mail: paperbakup@163.com                                         */
+/*   Date : 2004-11-26                                                  */
+/************************************************************************/
+#include <stdio.h>
+typedef int TreeElemType;
+typedef struct BiTNode{
+	TreeElemType data;
+	struct BiTNode *lchild,*rchild;
+}BSTNode,*BSTree;
+typedef enum{FOUND,NOFOUND} Status;
+
+
+Status searchBST(BSTree *ptr_T,int key,BSTNode **ptr_key_pos, BSTNode *parent){
+	BSTNode *p,*T;
+
+	T=*ptr_T;
+	if(T==NULL) {
+		p=(BSTNode*)malloc(sizeof(BSTNode));
+		p->data=key;
+		p->rchild=p->lchild=NULL;
+		if(parent==NULL) *ptr_T=p;
+		else{
+			if(key<parent->data) parent->lchild=p;
+			else  	parent->rchild=p;
+		}
+		return NOFOUND;
+	}
+	else if(T->data==key) {
+		*ptr_key_pos=T;
+		return FOUND;
+	}
+	else if(key<T->data) {
+		return searchBST(&T->lchild,key,ptr_key_pos, T);
+	}
+	else{
+		return searchBST(&T->rchild,key,ptr_key_pos, T);
+	}
+}
+
+void PreOrderTrans(BSTree T){
+	if(T!=NULL){
+		printf("%d ",T->data);
+		PreOrderTrans(T->lchild);
+		PreOrderTrans(T->rchild);
+	}
+}
+void InOrderTrans(BSTree T){
+	if(T!=NULL){
+		InOrderTrans(T->lchild);
+		printf("%d ",T->data);
+		InOrderTrans(T->rchild);
+	}
+}
+void DeleteNode(BSTNode **flr){
+	/***if p is to be deleted and  the parent of p is f, flr=&f->lchild or flr=&f->rchild***/
+	BSTNode *q,*s,*p;
+
+	p=*flr;/* p is to be deleted*/
+	if(p->rchild==NULL) *flr=p->lchild;
+	else if(p->lchild==NULL) *flr=p->rchild;
+	else{
+		s=p->lchild;
+		q=NULL;
+		while(s->rchild!=NULL){
+			q=s;
+			s=s->rchild;
+		}
+		if(q!=NULL) {
+			q->rchild=s->lchild;
+			s->lchild=p->lchild;
+		}
+		s->rchild=p->rchild;
+		*flr=s;
+	}
+	free(p);
+}
+
+Status DeleteBST(BSTree *ptr_T, int key){
+	BSTNode *T;
+
+	T=*ptr_T;
+	if(T==NULL) return NOFOUND;
+	else {
+		if(T->data==key){
+			DeleteNode(ptr_T);
+			return FOUND;
+		}
+		else if(key<T->data) return DeleteBST(&T->lchild,key);
+		else return DeleteBST(&T->rchild,key);
+	}
+}
+void main(){
+	BSTree T=NULL;
+	BSTNode *position;
+	int key;
+
+        printf("Please input some keys to create a Binary Sort Tree,End by -1:\n");
+        scanf("%d",&key);
+        while(key!=-1){
+		searchBST(&T,key,&position,NULL);
+        	scanf("%d",&key);
+        }
+
+        /********Verify the result of creating BST*****/
+	printf("Pre-order transverse:\n");
+	PreOrderTrans(T);
+	printf("\n");
+	printf("In-order transverse:\n");
+	InOrderTrans(T);
+	printf("\n");
+	printf("Please input a key to search:\n");
+	scanf("%d",&key);
+	if(searchBST(&T,key,&position,NULL)==NOFOUND)
+		printf("No found a key: (%d) from the Tree, Insert it!\n",key);
+	else
+		printf("The record is :%d\n",position->data);
+	/********Verify over!!!************************/
+
+	/********Verify the result of Deleting recode form a BST*****/
+	printf("Please input a key to Delete:\n");
+	scanf("%d",&key);
+	if(DeleteBST(&T,key)==NOFOUND)
+		printf("No found a key: (%d) from the Tree!\n",key);
+	printf("Pre-order transverse:\n");
+	PreOrderTrans(T);
+	printf("\n");
+	printf("In-order transverse:\n");
+	InOrderTrans(T);
+	printf("\n");
+	/********Verify over!!!************************/
+	getch();
+}

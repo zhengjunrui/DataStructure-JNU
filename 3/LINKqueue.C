@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef  int ElemType;
+typedef struct node     
+{
+	ElemType data;
+   	struct node *next;
+}QNode;
+typedef struct {
+	QNode *front;
+	QNode *rear;
+}LinkQueue;
+void initqueue(LinkQueue *a)
+{
+	QNode *p;
+ 	p=(QNode*)malloc(sizeof(QNode));
+	p->next=NULL;
+	a->front=a->rear=p;
+}
+int LinkQueueEmpty(LinkQueue *a)
+{
+	if(a->rear==a->front) return 1;
+	else return 0;
+}
+void enqueue(LinkQueue *a, ElemType e)
+{
+	QNode *p;
+ 	p=(QNode*)malloc(sizeof(QNode));
+	p->next=NULL;p->data=e;
+	a->rear->next=p;
+	a->rear=p;
+}
+void dequeue(LinkQueue *a, ElemType *e)
+{
+	QNode *p;
+	if(a->rear==a->front) printf("The LinkQueue is NULL!\n");
+	else{
+		p=a->front->next;
+		*e=p->data;
+		a->front->next=p->next;
+		if(a->rear==p) a->rear=a->front;
+                free(p);
+	}
+
+}
+void destroyqueue(LinkQueue *a)
+{
+	QNode *p;
+	while(a->front!=NULL)
+	{
+		p=a->front;
+		a->front=a->front->next;
+		free(p);
+	}
+}
+
+void main()
+{
+	LinkQueue q;
+	ElemType e;
+	int i;
+	initqueue(&q);
+	printf("----The program tests linkqueue!!!-----\n");
+	printf("please input 4 interger:\n");
+       	for(i=0;i<4;i++) {
+		scanf("%d",&e);
+		enqueue(&q,e);
+	}
+	printf("Get element from the queue...\n");
+	for(i=0;i<4;i++) {
+		dequeue(&q,&e);
+                printf("%d  ", e);
+	}
+	printf("\n");
+	destroyqueue(&q);
+}
+
+

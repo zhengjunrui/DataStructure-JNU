@@ -1,0 +1,98 @@
+/************************************************************************/
+/*   The code creates a hash table.   		                        */
+/*   Author: John Lee                                                   */
+/*   E-mail: paperbakup@163.com                                         */
+/*   Date : 2004-12-05                                                  */
+/************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#define MAXSIZE 13
+typedef struct{
+	ElemType *elem;
+	int listsize;
+	int hashsize;
+}HashTable;
+
+typedef enum{FOUND,NOFOUND,SUCCESS,UNSUCCESS,DUPLICATE} Status;
+Status collision(int *ptr_pos){
+	static int count=0;
+	
+	count++;
+	if(++count==MAXSIZE) return UNSUCCESS;
+	else{
+		*ptr_pos=*ptr_pos+1;
+		return SUCESS;
+	}
+}
+Status SearchHash(HashTable *H,ElemType key,int *ptr_pos){
+	int pos;
+	Status sch;
+	
+	pos=key%H->hashsize;
+	while(H->elem[pos]!=INT_MAX&&key!=H->elem[pos]) sch=collision(&pos);
+	if(key==H->elem[pos]) return FOUND;
+	else if(sch==UNSUCESS) return UNSUCESS;
+	else{		
+		*ptr_pos=pos;
+		return NOFOUND;
+	}
+}
+
+Status InsertHash(HashTable *H,ElemType key){
+	int pos,count=0;
+	Status sch;
+	
+	if((sch=Search(H,key,&pos))==FOUND) return DUPLICATE;
+	else if(sch={
+		if(count<hashsize[H->sizeindex]/2){
+		H->elem[p]=key;
+		H->listsize++;
+		return SUCCESS;
+	}
+	else {
+		if(RecreateHashTable(H)!=SUCCESS) {
+			return UNSUCCESS;	
+		}
+		return	SUCCESS;
+	}
+}
+void init(HashTable *H){
+	int i;
+	H->hashsize=MAXSIZE;
+	H->listsize=0;
+	H->elem=(ElemType*)malloc(sizeof(ElemType)*hashsize);	
+	for(i=0;i<hashsize;i++) H->elem[i]=INT_MAX; /*if ==INT_MAX,the address 'i' not used*/
+}
+
+void main(){
+	
+	int key;
+	HashTable HT;
+	int record[]={19,14,23,1,68,20,84,27,55,11,10,79};
+	int total=12;/*The number of records*/
+
+        printf("The test data is (can modified in the program) :\n");
+        for(i=0;i<total;i++) printf("%d\t",record[i]);
+        printf("\n");
+        
+        init(&HT);
+        
+	for(i=0;i<total;i++){
+		switch(InsertHashTable(&HT,key)){
+			case UNSUCCESS:
+				printf("The max volume of hash talbe is reached,can not insert!\n");
+				break;
+			case DUPLICATE;
+			        printf("The key exsited in the hash table\n");
+			        break;
+			case SUCCESS:
+				printf("Insert successfully.The new table is:\n");
+				for(i=0;i<hashsize[H.sizeindex];i++) printf("%d\t",H.elem[i]);
+				printf("\n");
+				break;		
+		}
+	}
+	free(HT.elem);
+	getch();
+}
